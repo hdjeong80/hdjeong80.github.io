@@ -1,6 +1,6 @@
 {
-    "name": "animation_exp",
-    "short_name": "animation_exp",
+    "name": "lunch_finder",
+    "short_name": "lunch_finder",
     "start_url": ".",
     "display": "minimal-ui",
     "background_color": "#0175C2",
