@@ -42043,7 +42043,7 @@ F.oO.prototype={
 aK:function(){return new F.Bq(C.p)}}
 F.Bq.prototype={
 G:function(a,b){var s=null
-return M.ZW(E.Y7(s,L.yz("CATAN City & Knight",s)),s,new S.hY(s))}}
+return M.ZW(E.Y7(s,L.yz("hdjeong80@gmail.com",s)),s,new S.hY(s))}}
 K.iw.prototype={
 aK:function(){return new K.Cy(null,C.p)},
 jq:function(a,b){return this.c.$2(a,b)}}
