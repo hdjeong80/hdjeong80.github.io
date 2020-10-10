@@ -3,36 +3,22 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "b7552dfaeeb02265186f030bbd928494",
-"assets/assets/demo_image.jpeg": "4129427d4b3d8ffbfda70b0bae61400b",
-"assets/assets/flutter.png": "d21f1eecaeaab081ba7efec1721c0712",
-"assets/assets/flutter_black.png": "c5acd77db2a11ae66f1a58817dbb6681",
-"assets/assets/flutter_original.png": "c416c43113126a6052bdb807580962a6",
-"assets/assets/flutter_white.png": "b5b8556ea9f48ca7cf794f52525d7cf7",
-"assets/assets/github.png": "3e54ed15b9cd877c5223f5ecf64579df",
-"assets/assets/github_app.png": "1fbf1eeb622038a1ea2e62036d33788a",
-"assets/assets/jaimeblasco.jpeg": "52e200d3b4ec4978617490d949f90d0e",
-"assets/assets/MacBook.jpg": "3d3f92faf14d52e12c8a8583a2cf30c2",
-"assets/assets/mail.png": "dc55662a996e5617957530fe4d32d06a",
-"assets/assets/message.png": "4ab37fd9235ee454ef36d904f80502ff",
-"assets/assets/person1.jpeg": "1d93c1b598e0378af0ce618fa39b2f19",
-"assets/assets/person2.jpeg": "94bd58214363da080f5c92298a4cb1ef",
-"assets/assets/person3.jpeg": "68f7f58edb11830b0525a4c65cc3a845",
-"assets/assets/person4.jpeg": "2e9b5940fd621cd2b6ef87652e922100",
-"assets/assets/ship.png": "dc7efb51758e4c5c2414e7732a167e26",
-"assets/assets/slack.png": "efd8727d64d49659d14eee20476f8de7",
-"assets/assets/twitter.png": "4907a786377fe693a9aa563792728683",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/NOTICES": "446bdd8cbcb03c02d05a677e54b95109",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
+  "version.json": "7dcf07035c7ce01c200bd6cc586a6894",
+"index.html": "b112f6b9deb96fde91be543f147da8bf",
+"/": "b112f6b9deb96fde91be543f147da8bf",
+"main.dart.js": "f34f7c12bbe708c1b5608145bbf5b5da",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"index.html": "9cf4f383766fbae2fcd97367d24382fa",
-"/": "9cf4f383766fbae2fcd97367d24382fa",
-"main.dart.js": "25901aede0d0dd0b8a64774c4c53e601",
-"manifest.json": "00e0b69b49487ce4f9ff0c5fac8fda49"
+"manifest.json": "ad432c197c2f32158e4218437ad9e0da",
+"assets/AssetManifest.json": "732237003d5bfbf86fdc90e370fe67b7",
+"assets/NOTICES": "50a14f9ca1eac226ac53c09fc1797c1b",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "b14fcf3ee94e3ace300b192e9e7c8c5d",
+"assets/fonts/MaterialIcons-Regular.otf": "132a5e63b5e510933ab4845577716106",
+"assets/assets/ship.png": "dc7efb51758e4c5c2414e7732a167e26",
+"assets/assets/dice_long.mp3": "fa5ed68f8fe85b864d60bca17e892f8e",
+"assets/assets/dice_short.mp3": "61e76cd75d200939c1b2226bfee972b1"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -46,6 +32,7 @@ const CORE = [
 "assets/FontManifest.json"];
 // During install, the TEMP cache is populated with the application shell files.
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
@@ -114,6 +101,9 @@ self.addEventListener("activate", function(event) {
 // The fetch handler redirects requests for RESOURCE files to the service
 // worker cache.
 self.addEventListener("fetch", (event) => {
+  if (event.request.method !== 'GET') {
+    return;
+  }
   var origin = self.location.origin;
   var key = event.request.url.substring(origin.length + 1);
   // Redirect URLs to the index.html
@@ -123,9 +113,10 @@ self.addEventListener("fetch", (event) => {
   if (event.request.url == origin || event.request.url.startsWith(origin + '/#') || key == '') {
     key = '/';
   }
-  // If the URL is not the RESOURCE list, skip the cache.
+  // If the URL is not the RESOURCE list then return to signal that the
+  // browser should take over.
   if (!RESOURCES[key]) {
-    return event.respondWith(fetch(event.request));
+    return;
   }
   // If the URL is the index.html, perform an online-first request.
   if (key == '/') {
@@ -149,10 +140,12 @@ self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
   // This will also require a page refresh triggered by the main worker.
   if (event.data === 'skipWaiting') {
-    return self.skipWaiting();
+    self.skipWaiting();
+    return;
   }
-  if (event.message === 'downloadOffline') {
+  if (event.data === 'downloadOffline') {
     downloadOffline();
+    return;
   }
 });
 
