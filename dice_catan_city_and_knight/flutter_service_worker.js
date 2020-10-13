@@ -3,22 +3,28 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "version.json": "7dcf07035c7ce01c200bd6cc586a6894",
-"index.html": "c1b3ba258f2223734271350444d69d62",
-"/": "c1b3ba258f2223734271350444d69d62",
-"main.dart.js": "313bc2d1813344b3fca99cea5918a0e5",
+  "assets/AssetManifest.json": "e332f8a0ac8eaf333408f1c936924bcc",
+"assets/assets/castle.png": "61ca4435582472d27ed81bd6a4c7ccc4",
+"assets/assets/castle_blue.png": "854e4e440d71eaf54f0cf8dee5f156c6",
+"assets/assets/castle_green.png": "e226838177b3595dda0bced9ec8515c1",
+"assets/assets/castle_yellow.png": "35d68b165c942f8be490e01bb7f21583",
+"assets/assets/catan_bgm.mp3": "72d7dea04a7baad3bdb2cd3def97a827",
+"assets/assets/dice_long.mp3": "fa5ed68f8fe85b864d60bca17e892f8e",
+"assets/assets/dice_short.mp3": "61e76cd75d200939c1b2226bfee972b1",
+"assets/assets/ship.png": "dc7efb51758e4c5c2414e7732a167e26",
+"assets/assets/wood.png": "4894565104072ec11f350bd5cad6f664",
+"assets/assets/wood_large.png": "03f9e68e4f5d6a5355abc19e5c1708a8",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
+"assets/NOTICES": "7aacaf86c7166675a982da21ebd9ba56",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "b14fcf3ee94e3ace300b192e9e7c8c5d",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"manifest.json": "ad432c197c2f32158e4218437ad9e0da",
-"assets/AssetManifest.json": "732237003d5bfbf86fdc90e370fe67b7",
-"assets/NOTICES": "50a14f9ca1eac226ac53c09fc1797c1b",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "b14fcf3ee94e3ace300b192e9e7c8c5d",
-"assets/fonts/MaterialIcons-Regular.otf": "132a5e63b5e510933ab4845577716106",
-"assets/assets/ship.png": "dc7efb51758e4c5c2414e7732a167e26",
-"assets/assets/dice_long.mp3": "fa5ed68f8fe85b864d60bca17e892f8e",
-"assets/assets/dice_short.mp3": "61e76cd75d200939c1b2226bfee972b1"
+"index.html": "801478a66fb02df52c949b3d9d406af7",
+"/": "801478a66fb02df52c949b3d9d406af7",
+"main.dart.js": "5b2592118d4c6a7f95da9efe17c5215f",
+"manifest.json": "a62befa71162bbdc08b614b5e5aa3e53"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -32,7 +38,6 @@ const CORE = [
 "assets/FontManifest.json"];
 // During install, the TEMP cache is populated with the application shell files.
 self.addEventListener("install", (event) => {
-  self.skipWaiting();
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
@@ -101,9 +106,6 @@ self.addEventListener("activate", function(event) {
 // The fetch handler redirects requests for RESOURCE files to the service
 // worker cache.
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== 'GET') {
-    return;
-  }
   var origin = self.location.origin;
   var key = event.request.url.substring(origin.length + 1);
   // Redirect URLs to the index.html
@@ -113,10 +115,9 @@ self.addEventListener("fetch", (event) => {
   if (event.request.url == origin || event.request.url.startsWith(origin + '/#') || key == '') {
     key = '/';
   }
-  // If the URL is not the RESOURCE list then return to signal that the
-  // browser should take over.
+  // If the URL is not the RESOURCE list, skip the cache.
   if (!RESOURCES[key]) {
-    return;
+    return event.respondWith(fetch(event.request));
   }
   // If the URL is the index.html, perform an online-first request.
   if (key == '/') {
@@ -140,12 +141,10 @@ self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
   // This will also require a page refresh triggered by the main worker.
   if (event.data === 'skipWaiting') {
-    self.skipWaiting();
-    return;
+    return self.skipWaiting();
   }
-  if (event.data === 'downloadOffline') {
+  if (event.message === 'downloadOffline') {
     downloadOffline();
-    return;
   }
 });
 
