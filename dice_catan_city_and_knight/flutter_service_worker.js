@@ -3,28 +3,31 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "e332f8a0ac8eaf333408f1c936924bcc",
-"assets/assets/castle.png": "61ca4435582472d27ed81bd6a4c7ccc4",
-"assets/assets/castle_blue.png": "854e4e440d71eaf54f0cf8dee5f156c6",
-"assets/assets/castle_green.png": "e226838177b3595dda0bced9ec8515c1",
-"assets/assets/castle_yellow.png": "35d68b165c942f8be490e01bb7f21583",
-"assets/assets/catan_bgm.mp3": "72d7dea04a7baad3bdb2cd3def97a827",
-"assets/assets/dice_long.mp3": "fa5ed68f8fe85b864d60bca17e892f8e",
-"assets/assets/dice_short.mp3": "61e76cd75d200939c1b2226bfee972b1",
-"assets/assets/ship.png": "dc7efb51758e4c5c2414e7732a167e26",
-"assets/assets/wood.png": "4894565104072ec11f350bd5cad6f664",
-"assets/assets/wood_large.png": "03f9e68e4f5d6a5355abc19e5c1708a8",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/NOTICES": "7aacaf86c7166675a982da21ebd9ba56",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "b14fcf3ee94e3ace300b192e9e7c8c5d",
+  "version.json": "8044905e06fca3b357a889e9fc80914e",
+"index.html": "aed5a26f381cce9a6238e2daafefc76b",
+"/": "aed5a26f381cce9a6238e2daafefc76b",
+"main.dart.js": "f44b382da7c6de552db3e6f517f387cf",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"index.html": "801478a66fb02df52c949b3d9d406af7",
-"/": "801478a66fb02df52c949b3d9d406af7",
-"main.dart.js": "5b2592118d4c6a7f95da9efe17c5215f",
-"manifest.json": "a62befa71162bbdc08b614b5e5aa3e53"
+"manifest.json": "ad432c197c2f32158e4218437ad9e0da",
+"assets/AssetManifest.json": "40282fe737ccc2a3a02c31b5d8308834",
+"assets/NOTICES": "78dd4141a61e76b95d7c287be19c8da8",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "b14fcf3ee94e3ace300b192e9e7c8c5d",
+"assets/fonts/MaterialIcons-Regular.otf": "132a5e63b5e510933ab4845577716106",
+"assets/assets/castle_yellow.png": "35d68b165c942f8be490e01bb7f21583",
+"assets/assets/castle.png": "61ca4435582472d27ed81bd6a4c7ccc4",
+"assets/assets/ship.png": "dc7efb51758e4c5c2414e7732a167e26",
+"assets/assets/wood_large.png": "03f9e68e4f5d6a5355abc19e5c1708a8",
+"assets/assets/dice_long.mp3": "fa5ed68f8fe85b864d60bca17e892f8e",
+"assets/assets/button_download_android.png": "77efec49589042d38d55c6148b1417bf",
+"assets/assets/wood.png": "4894565104072ec11f350bd5cad6f664",
+"assets/assets/catan_bgm.mp3": "72d7dea04a7baad3bdb2cd3def97a827",
+"assets/assets/castle_green.png": "e226838177b3595dda0bced9ec8515c1",
+"assets/assets/castle_blue.png": "854e4e440d71eaf54f0cf8dee5f156c6",
+"assets/assets/button_download_ios.png": "e02bc30d0a62e350ba1daec0bdcecfe4",
+"assets/assets/dice_short.mp3": "61e76cd75d200939c1b2226bfee972b1"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -38,6 +41,7 @@ const CORE = [
 "assets/FontManifest.json"];
 // During install, the TEMP cache is populated with the application shell files.
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
@@ -106,6 +110,9 @@ self.addEventListener("activate", function(event) {
 // The fetch handler redirects requests for RESOURCE files to the service
 // worker cache.
 self.addEventListener("fetch", (event) => {
+  if (event.request.method !== 'GET') {
+    return;
+  }
   var origin = self.location.origin;
   var key = event.request.url.substring(origin.length + 1);
   // Redirect URLs to the index.html
@@ -115,9 +122,10 @@ self.addEventListener("fetch", (event) => {
   if (event.request.url == origin || event.request.url.startsWith(origin + '/#') || key == '') {
     key = '/';
   }
-  // If the URL is not the RESOURCE list, skip the cache.
+  // If the URL is not the RESOURCE list then return to signal that the
+  // browser should take over.
   if (!RESOURCES[key]) {
-    return event.respondWith(fetch(event.request));
+    return;
   }
   // If the URL is the index.html, perform an online-first request.
   if (key == '/') {
@@ -141,10 +149,12 @@ self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
   // This will also require a page refresh triggered by the main worker.
   if (event.data === 'skipWaiting') {
-    return self.skipWaiting();
+    self.skipWaiting();
+    return;
   }
-  if (event.message === 'downloadOffline') {
+  if (event.data === 'downloadOffline') {
     downloadOffline();
+    return;
   }
 });
 
