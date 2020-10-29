@@ -1,11 +1,11 @@
 {
-    "name": "lunch_card",
-    "short_name": "lunch_card",
+    "name": "lunch_worldcup",
+    "short_name": "lunch_worldcup",
     "start_url": ".",
-    "display": "minimal-ui",
+    "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Lunch Worldcup",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
