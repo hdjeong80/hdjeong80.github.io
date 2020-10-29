@@ -3,22 +3,22 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "8f082de8617cf533042761adf8fe7c21",
-"assets/assets/food_sample.jpeg": "4f954873e6f49c0df862450c5e2fd464",
-"assets/assets/location.jpeg": "19c4e4e5c9d7c663cead257236dc9541",
-"assets/assets/trophy.png": "a8b3db3405117366b30356aacf64490a",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
-"assets/NOTICES": "0ad20c0abf84226fdd170bf1e2f11f5d",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
+  "version.json": "f80229c80538a985ae9a37402149b027",
+"index.html": "eabe8ffc8f0329a6dba9e0d636134e58",
+"/": "eabe8ffc8f0329a6dba9e0d636134e58",
+"main.dart.js": "d7245c54168ed1c00aa4324c5e3adcd7",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"index.html": "ef459ba622b5f7950cf99dfd7fbd40ba",
-"/": "ef459ba622b5f7950cf99dfd7fbd40ba",
-"main.dart.js": "0cf964c626d3bd12f381fc2821d775eb",
-"manifest.json": "5eb0619cefd7ae7982f975b3a9aee15e",
-"version.json": "f80229c80538a985ae9a37402149b027"
+"manifest.json": "05759fcfaba90f981f3d3bd047020580",
+"assets/AssetManifest.json": "a387cc108b60bb540a28c76a837d338f",
+"assets/NOTICES": "20fb3e84c159817eb403e2e15376b76b",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
+"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
+"assets/assets/location.jpeg": "19c4e4e5c9d7c663cead257236dc9541",
+"assets/assets/trophy.png": "a8b3db3405117366b30356aacf64490a",
+"assets/assets/food_sample.jpeg": "4f954873e6f49c0df862450c5e2fd464"
 };
 
 // The application shell files that are downloaded before a service worker can
